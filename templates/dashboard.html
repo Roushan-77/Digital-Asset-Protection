@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block body %}
+<header class="app-topbar glass-card">
+    <div>
+        <strong>SportShield</strong>
+        <span>Alerts for @{{ current_user.username }}</span>
+    </div>
+    <nav class="simple-nav">
+        <a href="{{ url_for('media.feed') }}">Feed</a>
+        <a href="{{ url_for('auth.logout') }}">Logout</a>
+    </nav>
+</header>
+
+<main class="dashboard-page container">
+    <section class="dashboard-hero glass-card">
+        <span class="eyebrow">Dashboard</span>
+        <h1>Your Content Insights</h1>
+        <p>Review detected reuse of media you own and inspect AI-generated risk explanations.</p>
+    </section>
+    {% include "_flash.html" %}
+    <section class="alerts-grid">
+        {% for report in reports %}
+            <article class="alert-card glass-card">
+                <div class="compare-grid">
+                    <figure>
+                        <img src="{{ url_for('uploaded_file', filename=report.original_media.file_path) }}" alt="Original image">
+                        <figcaption>Original</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="{{ url_for('uploaded_file', filename=report.uploaded_media.file_path) }}" alt="Misused image">
+                        <figcaption>Uploaded by @{{ report.uploader.username }}</figcaption>
+                    </figure>
+                </div>
+                <div class="alert-body">
+                    <span class="risk {{ report.risk_level|lower }}">{{ report.risk_level }} Risk</span>
+                    <h2>{{ "%.1f"|format(report.similarity_score * 100) }}% similar</h2>
+                    <p>{{ report.gemini_response }}</p>
+                    <a class="text-link" href="{{ url_for('media.detection_detail', report_id=report.id) }}">View detail</a>
+                </div>
+            </article>
+        {% else %}
+            <p class="empty">No alerts for your content yet.</p>
+        {% endfor %}
+    </section>
+</main>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block body %}
+<header class="app-topbar glass-card">
+    <div>
+        <strong>Alert Detail</strong>
+        <span>Detection #{{ report.id }}</span>
+    </div>
+    <nav class="simple-nav">
+        <a href="{{ url_for('dashboard.dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('media.feed') }}">Feed</a>
+    </nav>
+</header>
+
+<main class="dashboard-page container">
+    <article class="alert-card glass-card">
+        <div class="compare-grid">
+            <figure>
+                <img src="{{ url_for('uploaded_file', filename=report.original_media.file_path) }}" alt="Original image">
+                <figcaption>Original owned by @{{ report.original_media.owner.username }}</figcaption>
+            </figure>
+            <figure>
+                <img src="{{ url_for('uploaded_file', filename=report.uploaded_media.file_path) }}" alt="Misused image">
+                <figcaption>Uploaded by @{{ report.uploader.username }}</figcaption>
+            </figure>
+        </div>
+        <div class="alert-body">
+            <span class="risk {{ report.risk_level|lower }}">{{ report.risk_level }} Risk</span>
+            <h1>{{ "%.1f"|format(report.similarity_score * 100) }}% similar</h1>
+            <p>{{ report.gemini_response }}</p>
+        </div>
+    </article>
+</main>
+{% endblock %}

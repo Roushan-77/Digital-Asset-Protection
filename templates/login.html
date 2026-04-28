@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block body %}
+<main class="auth-shell">
+    <section class="auth-brand-panel">
+        <div class="orb orb-one"></div>
+        <div class="orb orb-two"></div>
+        <article class="brand-glass glass-card">
+            <span class="eyebrow">AI Content Defense</span>
+            <h1>SportShield</h1>
+            <p>AI-powered digital asset protection for sports media. Detect, track, and prevent unauthorized content usage in real time.</p>
+        </article>
+    </section>
+
+    <section class="auth-form-panel">
+        <article class="auth-card glass-card">
+            <span class="eyebrow">Welcome back</span>
+            <h2>Login</h2>
+            {% include "_flash.html" %}
+            <form method="post" data-loading-form data-loading-text="Signing in...">
+                <label>Username
+                    <input type="text" name="username" autocomplete="username" required>
+                </label>
+                <label>Password
+                    <input type="password" name="password" autocomplete="current-password" required>
+                </label>
+                <button class="btn-primary" type="submit" data-submit-button>
+                    <span data-button-label>Login</span>
+                </button>
+            </form>
+            <p>Need an account? <a href="{{ url_for('auth.register') }}">Register</a></p>
+        </article>
+    </section>
+</main>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block body %}
+<input class="menu-toggle" id="menu-toggle" type="checkbox">
+<header class="app-topbar glass-card">
+    <div>
+        <strong>SportShield</strong>
+        <span>Protected social feed</span>
+    </div>
+    <label class="menu-button" for="menu-toggle" aria-label="Open menu">&#9776;</label>
+</header>
+
+<aside class="sidebar glass-card">
+    <label class="close-menu" for="menu-toggle">Close</label>
+    <a href="{{ url_for('dashboard.dashboard') }}">Dashboard</a>
+    <a href="{{ url_for('auth.logout') }}">Logout</a>
+</aside>
+
+<main class="social-layout container">
+    <section class="left-panel glass-card">
+        <div class="profile-avatar">{{ current_user.username[:1]|upper }}</div>
+        <h2>@{{ current_user.username }}</h2>
+        <p>Creator account</p>
+    </section>
+
+    <section class="center-panel">
+        {% include "_flash.html" %}
+        <article class="upload-box glass-card">
+            <span class="eyebrow">New asset</span>
+            <h1>Share Sports Media</h1>
+            <form class="upload-form" method="post" action="{{ url_for('media.upload') }}" enctype="multipart/form-data" data-loading-form data-loading-text="Uploading...">
+                <input class="image-input" type="file" name="image" accept="image/*" required>
+                <div class="image-preview" data-image-preview hidden>
+                    <img src="" alt="Selected image preview">
+                    <span data-file-name></span>
+                </div>
+                <button class="btn-primary" type="submit" data-submit-button>
+                    <span data-button-label>Upload</span>
+                </button>
+            </form>
+        </article>
+
+        <section class="feed-list">
+            <h2>Feed</h2>
+            {% for item in media_items %}
+                <article class="post-card glass-card {% if item.is_flagged %}flagged{% endif %}">
+                    <div class="post-head">
+                        <strong>@{{ item.owner.username }}</strong>
+                        {% if item.is_flagged %}<span>Flagged</span>{% endif %}
+                    </div>
+                    <img src="{{ url_for('uploaded_file', filename=item.file_path) }}" alt="Uploaded image">
+                    <small>{{ item.created_at.strftime("%Y-%m-%d %H:%M") }}</small>
+                </article>
+            {% else %}
+                <p class="empty">No uploads yet.</p>
+            {% endfor %}
+        </section>
+    </section>
+
+    <section class="right-panel glass-card">
+        <h2>My Uploads</h2>
+        <div class="mini-list">
+            {% for item in my_uploads %}
+                <article class="mini-upload">
+                    <img src="{{ url_for('uploaded_file', filename=item.file_path) }}" alt="My upload">
+                    <span>{{ "Flagged" if item.is_flagged else "Uploaded" }}</span>
+                </article>
+            {% else %}
+                <p class="empty">You have not uploaded yet.</p>
+            {% endfor %}
+        </div>
+    </section>
+</main>
+{% endblock %}

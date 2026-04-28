@@ -1,0 +1,9 @@
+.env
+**pycache**/
+__pycache__/
+*.pyc
+*.db
+.venv/
+data/
+instance/
+uploads/
